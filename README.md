@@ -2,7 +2,7 @@
 
 A simple editor utility that allows for arbitrary logic execution before and after entering play mode.
 
-# Installation
+## Installation
 
 Copy the folder structure into your unity project's Assets folder. The exact location doesn't matter, we don't rely on any static paths.
 
@@ -26,7 +26,7 @@ EnterPlaymodeSetup has a serialized list of MonoScript assets (script assets) wh
 - OnPostEnterPlaymode(Scene activeScene, Scene[] openScenes) - this gets called right after we enter play mode, keep in mind that Awake has already run on any active scene objects
 - OnPostExitPlaymode() - this gets called after we exit the game, it is no longer running and we're in pure edit mode
 
-# How It Works
+## How It Works
 
 To recieve the callbacks for entering/exiting playmode, the setup object uses the EditorApplication.playmodeStateChanged event. That's all there is to it...
 
