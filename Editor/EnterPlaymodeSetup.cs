@@ -10,6 +10,7 @@
 
     public class EnterPlaymodeSetup : ScriptableObject
     {
+
         private const string ASSET_TYPE_FILTER = "EnterPlaymodeSetup.Editor.EnterPlaymodeSetup";
 
         private static EnterPlaymodeSetup _instance
@@ -47,7 +48,7 @@
         
         [SerializeField] private bool _isEnabled = true;
 
-        [SerializeField] private List<MonoScript> _initializationLogic = new List<MonoScript>();
+        [SerializeField] private List<AbstractPlaymodeEnterInitializationLogic> _initializationLogic = new List<AbstractPlaymodeEnterInitializationLogic>();
 
         [SerializeField, HideInInspector] private AbstractPlaymodeEnterInitializationLogic[] _logicInstances;
 
@@ -79,7 +80,7 @@
 
             for (int i = 0; i < _logicInstances.Length; i++)
             {
-                _logicInstances[i] = (AbstractPlaymodeEnterInitializationLogic) CreateInstance(_initializationLogic[i].GetClass());
+                _logicInstances[i] = Instantiate(_initializationLogic[i]);
 
                 AssetDatabase.AddObjectToAsset(_logicInstances[i], this);
             }
@@ -127,56 +128,6 @@
             }
 
             _logicInstances = null;
-        }
-        
-        private void ValidateList()
-        {
-            _initializationLogic.RemoveAll((ms) =>
-            {
-                if (ms == null)
-                {
-                    Debug.LogWarning("Referenced script cannot be null!", this);
-                    return true;
-                }
-
-                var classType = ms.GetClass();
-
-                if (classType == null)
-                {
-                    Debug.LogWarning("Referenced script not recognized as a type! Did you name the script correctly?", this);
-                    return true;
-                }
-
-                if (classType.IsAbstract)
-                {
-                    Debug.LogWarning("Referenced script must be a concrete implementation of AbstractPlaymodeEnterInitializationLogic", this);
-                    return true;
-                }
-
-                if (typeof(AbstractPlaymodeEnterInitializationLogic).IsAssignableFrom(classType) == false)
-                {
-                    Debug.LogWarning("Referenced script has to implement the AbstractPlaymodeEnterInitializationLogic interface!", this);
-                    return true;
-                }
-
-                return false;
-            });
-        }
-
-        [CustomEditor(typeof(EnterPlaymodeSetup))]
-        private class EnterPlaymodeSetupEditor : Editor
-        {
-            public override void OnInspectorGUI()
-            {
-                base.OnInspectorGUI();
-
-                EditorGUILayout.Space();
-
-                if (GUILayout.Button("Validate types"))
-                {
-                    ((EnterPlaymodeSetup) target).ValidateList();
-                }
-            }
         }
     }
 }

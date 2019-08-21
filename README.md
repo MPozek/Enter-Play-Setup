@@ -14,13 +14,13 @@ LogPlaymodeEnterLogic - displays a simple message before entering, after enterin
 
 AlwaysStartInSceneWithIndexZero - replaces the currently open scenes before entering play mode with the scene at index 0 and restores the scene setup after exiting play mode. This example is useful for ensuring that your game always starts from the splash screen when you hit play, instead of from an arbitrary scene.
 
-To enable the examples, locate the EnterPlaymodeSetup scriptable object and add the scripts to the list of initialization logic.
+To enable the examples, locate the EnterPlaymodeSetup scriptable object and add the scriptable object instances of the examples to the list of initialization logic.
 
 ## How To Use
 
 You can setup the logic to be executed from the scriptable object instance of EnterPlaymodeSetup. This scriptable object is editor-only and is a singleton (if one doesn't exist it will automatically be created in the project).
 
-EnterPlaymodeSetup has a serialized list of MonoScript assets (script assets) which you can populate with arbitrary scripts that implement the AbstractPlaymodeEnterInitializationLogic. Any such script can override three methods:
+EnterPlaymodeSetup has a serialized list of AbstractPlaymodeEnterInitializationLogic assets. Any concrete implementation of the class can override 3 methods:
 
 - OnPreEnterPlaymode(Scene activeScene, Scene[] openScenes) - this gets called right before we enter play mode, the game is not yet running
 - OnPostEnterPlaymode(Scene activeScene, Scene[] openScenes) - this gets called right after we enter play mode, keep in mind that Awake has already run on any active scene objects
@@ -30,4 +30,4 @@ EnterPlaymodeSetup has a serialized list of MonoScript assets (script assets) wh
 
 To recieve the callbacks for entering/exiting playmode, the setup object uses the EditorApplication.playmodeStateChanged event. That's all there is to it...
 
-The harder part is perserving any data from the first callback (OnPreEnterPlaymode) to the second callback (OnPostEnterPlaymode). This is accomplished by saving the instanced of the scripts as ScriptableObjects. These objects get destroyed once OnPostExitPlaymode is done executing.
+The harder part is perserving any data from the first callback (OnPreEnterPlaymode) to the second callback (OnPostEnterPlaymode). This is accomplished by creating copies of the attached scriptable objects and saving them as assets. These copies get destroyed once OnPostExitPlaymode is done executing so that no temporary data gets saved.
