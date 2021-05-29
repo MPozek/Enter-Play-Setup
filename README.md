@@ -1,3 +1,5 @@
+**Warning:** The current state of this repository is incompatible with unity versions 2019+, there are some minor changes needed to persist data between loads and for examples to work again, i'll update it when i get the chance
+
 # Enter Play Setup
 
 A simple editor utility that allows for arbitrary logic execution before and after entering play mode.
